@@ -113,28 +113,98 @@ Once you've registered go to your Account > Apps > New token. The 'Default Secre
 
 ### Android
 
-Mapbox now requires (version > 8.6.6) an api key to download the sdk
+Mapbox requires an access token to download the SDK (for versions > 8.6.6). This library is configured to use the Mapbox Downloads Token from your project's `gradle.properties` file or environment variables.
 
-If you want to use newer version than the default 8.6.6 you need to add this to your `app.gradle`
-```gradle
-allprojects {
-  repositories {
-       maven {
-        url 'https://api.mapbox.com/downloads/v2/releases/maven'
-        authentication {
-            basic(BasicAuthentication)
-        }
-        credentials {
-            // Do not change the username below.
-            // This should always be `mapbox` (not your username). 
-            username = 'mapbox'
-            // Use the secret token you stored in gradle.properties as the password
-            password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
-        }
-    }
-  }
-}
+#### How to get your Mapbox Downloads Token
+
+1. Sign up or log in to [Mapbox](https://account.mapbox.com/)
+2. Go to your [Account page](https://account.mapbox.com/)
+3. Scroll down to "Access tokens" section
+4. Create a new token or use your existing **Secret token** with `DOWNLOADS:READ` scope
+5. Copy the secret token (starts with `sk.`)
+
+> **Important:** This is NOT the same as your public access token. You need a **secret token** specifically for downloading the SDK.
+
+#### Where to add the MAPBOX_DOWNLOADS_TOKEN
+
+You have two options to configure the token:
+
+##### Option 1: Project-level gradle.properties (Recommended for teams)
+
+Create or edit the `gradle.properties` file in your NativeScript project's `App_Resources/Android/` directory:
+
 ```
+# File: App_Resources/Android/gradle.properties
+
+MAPBOX_DOWNLOADS_TOKEN=sk.YOUR_SECRET_TOKEN_HERE
+```
+
+If the `gradle.properties` file doesn't exist in `App_Resources/Android/`, create it.
+
+##### Option 2: Global gradle.properties (Recommended for individual developers)
+
+Add the token to your global Gradle properties file. This keeps your token out of version control:
+
+**On macOS/Linux:**
+```bash
+echo "MAPBOX_DOWNLOADS_TOKEN=sk.YOUR_SECRET_TOKEN_HERE" >> ~/.gradle/gradle.properties
+```
+
+**On Windows:**
+```powershell
+Add-Content $env:USERPROFILE\.gradle\gradle.properties "MAPBOX_DOWNLOADS_TOKEN=sk.YOUR_SECRET_TOKEN_HERE"
+```
+
+Or manually create/edit the file at:
+- **macOS/Linux:** `~/.gradle/gradle.properties`
+- **Windows:** `C:\Users\YOUR_USERNAME\.gradle\gradle.properties`
+
+##### Option 3: Environment Variable
+
+Set the `MAPBOX_DOWNLOADS_TOKEN` environment variable:
+
+**On macOS/Linux:**
+```bash
+export MAPBOX_DOWNLOADS_TOKEN=sk.YOUR_SECRET_TOKEN_HERE
+```
+
+**On Windows (Command Prompt):**
+```cmd
+set MAPBOX_DOWNLOADS_TOKEN=sk.YOUR_SECRET_TOKEN_HERE
+```
+
+**On Windows (PowerShell):**
+```powershell
+$env:MAPBOX_DOWNLOADS_TOKEN="sk.YOUR_SECRET_TOKEN_HERE"
+```
+
+For permanent environment variables, add them to your system environment variables.
+
+#### How the token is used
+
+The library automatically configures the Mapbox Maven repository in your Android build. The token is read from:
+1. First, from `gradle.properties` (project or global)
+2. If not found, from the `MAPBOX_DOWNLOADS_TOKEN` environment variable
+
+The repository configuration is already included in this library's Android platform files, so you don't need to modify your `app.gradle` unless you want to customize it.
+
+#### Troubleshooting
+
+**Build fails with authentication error:**
+- Verify your token has `DOWNLOADS:READ` scope
+- Make sure you're using a **secret token** (starts with `sk.`), not a public token
+- Check that the token is correctly set in `gradle.properties` or environment variables
+- Try cleaning your build: `ns clean` or manually delete `platforms/android/build`
+
+**Token not being recognized:**
+- Ensure there are no extra spaces or quotes around the token in `gradle.properties`
+- Restart your IDE or terminal after setting environment variables
+- For Android Studio users: File → Invalidate Caches / Restart
+
+**Security note:**
+- Never commit your secret token to version control
+- Add `gradle.properties` to `.gitignore` if using project-level configuration
+- Use the global gradle.properties or environment variables for better security
 
 
 [](#installation)

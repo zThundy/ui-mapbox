@@ -3,6 +3,9 @@ hooks/
 node_modules/
 platforms
 
+# Gradle properties (may contain sensitive tokens)
+**/App_Resources/**/gradle.properties
+
 # NativeScript Template
 *.js.map
 !ngcc.config.js
