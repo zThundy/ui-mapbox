@@ -135,7 +135,7 @@ Mapbox requires an access token to download the SDK (for versions > 8.6.6). This
 
 #### Where to add the MAPBOX_DOWNLOADS_TOKEN
 
-You have two options to configure the token:
+You have three options to configure the token:
 
 ##### Option 1: Project-level gradle.properties (Recommended for teams)
 
