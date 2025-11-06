@@ -115,6 +115,8 @@ Once you've registered go to your Account > Apps > New token. The 'Default Secre
 
 Mapbox requires an access token to download the SDK (for versions > 8.6.6). This library is configured to use the Mapbox Downloads Token from your project's `gradle.properties` file or environment variables.
 
+> **📖 For detailed setup instructions, see the [Android Setup Guide](../../docs/ANDROID_SETUP.md)**
+
 #### How to get your Mapbox Downloads Token
 
 1. Sign up or log in to [Mapbox](https://account.mapbox.com/)
